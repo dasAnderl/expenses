@@ -12,6 +12,7 @@
  */
 angular
   .module('expensesApp', [
+    'couchDb',
     'ngAnimate',
     'ngCookies',
     'ngResource',

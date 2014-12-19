@@ -8,100 +8,62 @@
  * Controller of the expensesApp
  */
 angular.module('expensesApp')
-  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', function ($http, $q, $scope, appSettings) {
+  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', 'couchDbService', function ($http, $q, $scope, appSettings, couchDbService) {
 
     this.name = null;
     this.price = null;
     this.items = [];
     this.status = 'All good!';
 
-    this.getItems = function (mainCtrl) {
+    var expensesUrl = 'http://127.0.0.1:5984/expenses/_design/expenses/_view/byName';
 
-      $http.get(appSettings.db + '/_design/expenses/_view/byName').success((function (mainCtrl) {
-        return function (data) {
-          mainCtrl.items = data.rows;
-          console.log('loaded items');
-        }
-      })(mainCtrl))
-        .error(function (error) {
-          if (error != null)mainCtrl.status = 'Error: ' + error.reason;
-        });
+    this.getExpenses = function (url, wrapper) {
+      couchDbService.getJsonFromUrl(url)
+        .then((function (wrapper) {
+          return function (data) {
+            wrapper.items = data;
+          }
+        })(wrapper));
     }
 
-    this.getItems(this);
+    this.getExpenses(expensesUrl, this);
 
 
     this.saveExpense = function () {
-      var item = {
+      var doc = {
         name: this.name,
         price: this.price
       };
-      this.saveDoc(item);
-    }
-
-    this.saveDoc = function (item) {
-
-      var mainCtrl = this;
-
-      $http.post(appSettings.db, item)
-        .success((function (mainCtrl) {
+      var wrapper = this;
+      couchDbService.postDocToUrl(appSettings.db, doc, wrapper)
+        .then((function (wrapper) {
           return function () {
-            mainCtrl.status = 'Expense saved!';
-            console.log('Item saved:' + item);
-            mainCtrl.getItems(mainCtrl);
-            mainCtrl.name = null;
-            mainCtrl.price = null;
+            wrapper.status = 'Expense saved!';
+            wrapper.getExpenses(expensesUrl, wrapper);
+            wrapper.name = null;
+            wrapper.price = null;
             $scope.form.$setPristine();
           }
-        })(mainCtrl))
-        .error(function (error) {
-          mainCtrl.status = 'Error: ' + error.reason;
-          mainCtrl.getItems(mainCtrl);
-          console.log('Error saving item:' + item);
-        });
+        })(wrapper));
     }
 
     this.deleteExpense = function (item) {
 
-      var mainCtrl = this;
-      var revId = -1;
+      var wrapper = this;
 
-      $http.get(appSettings.db + '/' + item.id).success((function (mainCtrl) {
-        return function (data) {
-          revId = data._rev;
-          console.log('rev to delete ' + revId);
-          deleteDoc(item.id, revId, mainCtrl);
-          //mainCtrl.getItems(mainCtrl);
-        }
-      })(mainCtrl))
-        .error(function (error) {
-          mainCtrl.status = 'Error: ' + error.reason;
-        });
+      couchDbService.deleteUrl(appSettings.db + '/' +item.id)
+        .then((function (wrapper) {
+          return function () {
+            wrapper.status = 'Expense deleted!';
+            wrapper.getExpenses(expensesUrl, wrapper);
+          }
+        })(wrapper));
     }
-
-    function deleteDoc(id, rev, mainCtrl) {
-
-      $http.delete(appSettings.db + '/' + id + '?rev=' + rev).success((function (mainCtrl) {
-        return function (data) {
-          console.log('deleted doc, updating items');
-          mainCtrl.getItems(mainCtrl);
-
-        }
-      })(mainCtrl))
-        .error(function (error) {
-          mainCtrl.status = 'Error: ' + error.reason;
-        });
-
-    }
-
-
   }])
-  .directive('expensesTable', function () {
+  .
+  directive('expensesTable', function () {
     return {
       restrict: 'E',
-      scope: {
-        expenses: '=expenses'
-      },
       templateUrl: '../../views/directives/expenses-table.html'
     };
   });
