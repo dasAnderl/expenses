@@ -53,5 +53,5 @@ angular
     $httpProvider.interceptors.push('httpInterceptor');
   })
   .constant('appSettings', {
-    db: 'http://127.0.0.1:5984/expenses'
+    dbExpenses: 'http://127.0.0.1:5984/expenses'
   });

@@ -15,8 +15,6 @@ angular.module('expensesApp')
     this.items = [];
     this.status = 'All good!';
 
-    var expensesUrl = 'http://127.0.0.1:5984/expenses/_design/expenses/_view/byName';
-
     this.getExpenses = function (url, wrapper) {
       couchDbService.getJsonFromUrl(url)
         .then((function (wrapper) {
@@ -26,8 +24,8 @@ angular.module('expensesApp')
         })(wrapper));
     }
 
+    var expensesUrl = appSettings.dbExpenses+'/_design/expenses/_view/byName';
     this.getExpenses(expensesUrl, this);
-
 
     this.saveExpense = function () {
       var doc = {
@@ -35,7 +33,7 @@ angular.module('expensesApp')
         price: this.price
       };
       var wrapper = this;
-      couchDbService.postDocToUrl(appSettings.db, doc, wrapper)
+      couchDbService.postDocToUrl(appSettings.dbExpenses, doc)
         .then((function (wrapper) {
           return function () {
             wrapper.status = 'Expense saved!';
@@ -51,7 +49,7 @@ angular.module('expensesApp')
 
       var wrapper = this;
 
-      couchDbService.deleteUrl(appSettings.db + '/' +item.id)
+      couchDbService.deleteUrl(appSettings.dbExpenses + '/' +item.id)
         .then((function (wrapper) {
           return function () {
             wrapper.status = 'Expense deleted!';
