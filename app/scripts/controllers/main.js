@@ -7,38 +7,28 @@
  * # MainCtrl
  * Controller of the expensesApp
  */
-angular.module('expensesApp' , ['expensesServices']
-)
-  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', 'expensesService', function ($http, $q, $scope, appSettings, expensesService) {
+angular.module('expensesApp')
+  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', function ($http, $q, $scope, appSettings) {
 
     this.name = null;
     this.price = null;
     this.items = [];
     this.status = 'All good!';
 
-    console.log('1');
+    this.getItems = function (mainCtrl) {
 
-    expensesService.getExpenses();
+      $http.get(appSettings.db + '/_design/expenses/_view/byName').success((function (mainCtrl) {
+        return function (data) {
+          mainCtrl.items = data.rows;
+          console.log('loaded items');
+        }
+      })(mainCtrl))
+        .error(function (error) {
+          if (error != null)mainCtrl.status = 'Error: ' + error.reason;
+        });
+    }
 
-    console.log('2');
-
-    this.status = result.status;
-    this.items = result.expenses;
-
-    //this.getItems(this);
-    //
-    //this.getItems = function (mainCtrl) {
-    //
-    //  $http.get(appSettings.db + '/_design/expenses/_view/byName').success((function (mainCtrl) {
-    //    return function (data) {
-    //      mainCtrl.items = data.rows;
-    //      console.log('loaded items');
-    //    }
-    //  })(mainCtrl))
-    //    .error(function (error) {
-    //      if (error != null)mainCtrl.status = 'Error: ' + error.reason;
-    //    });
-    //}
+    this.getItems(this);
 
 
     this.saveExpense = function () {
