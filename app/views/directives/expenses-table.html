@@ -1,0 +1,13 @@
+<div class="container table-striped" ng-repeat="expense in expenses">
+  <div class="clearfix">
+    <div class="col-xs-5 pull-left">{{ expense.key }}</div>
+    <div class="col-xs-5">{{ expense.value }}</div>
+    <div class="col-xs-2 danger">
+      <form role="form" novalidate ng-submit="main.deleteExpense(expense)" name="deleteForm">
+        <button
+          class="pull-right red btn-link glyphicon glyphicon-remove"
+          type="submit"/>
+      </form>
+    </div>
+  </div>
+</div>
