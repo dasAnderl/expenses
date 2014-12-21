@@ -6,11 +6,11 @@
     <div class="container">
       <div class="col-xs-5" ng-class="{ 'has-error' : form.name.$invalid && !form.name.$pristine }">
         <input
-          ng-model="main.name" class="form-control" name="name" placeholder="What did you buy?" required>
+          ng-model="main.doc.name" class="form-control" name="name" placeholder="What did you buy?" required>
       </div>
       <div class="col-xs-5" ng-class="{ 'has-error' : form.price.$invalid && !form.price.$pristine }">
         <input name="price"
-               ng-model="main.price"
+               ng-model="main.doc.price"
                class="form-control"
                placeholder="...and how much did it cost?"
                required
@@ -28,7 +28,7 @@
     <br/>
 
     <div class="status" ng-hide="consRefused">
-      {{ status }}
+      {{ main.status }}
     </div>
     <div class="status" ng-show="consRefused">
       {{ consRefused }}

@@ -10,16 +10,21 @@
 angular.module('expensesApp')
   .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', 'couchDbService', function ($http, $q, $scope, appSettings, couchDbService) {
 
-    this.name = null;
-    this.price = null;
+    this.doc = {
+      name: null,
+      price: null,
+      date: null
+    };
+
     this.items = [];
-    this.status = 'All good!';
+    this.status = 'Initial state';
 
     this.getExpenses = function (url, wrapper) {
       couchDbService.getJsonFromUrl(url)
         .then((function (wrapper) {
           return function (data) {
             wrapper.items = data;
+            wrapper.status = 'Expenses updated!';
           }
         })(wrapper));
     }
@@ -27,19 +32,23 @@ angular.module('expensesApp')
     var expensesUrl = appSettings.dbExpenses+'/_design/expenses/_view/byName';
     this.getExpenses(expensesUrl, this);
 
+    try {
+    var a = new Date();
+      var b = JSON.stringify(a);
+      console.log(b);
+    }
+    catch(e){}
+
     this.saveExpense = function () {
-      var doc = {
-        name: this.name,
-        price: this.price
-      };
       var wrapper = this;
-      couchDbService.postDocToUrl(appSettings.dbExpenses, doc)
+      couchDbService.postDocToUrl(appSettings.dbExpenses, wrapper.doc)
         .then((function (wrapper) {
           return function () {
-            wrapper.status = 'Expense saved!';
             wrapper.getExpenses(expensesUrl, wrapper);
-            wrapper.name = null;
-            wrapper.price = null;
+            wrapper.status = 'Expense saved!';
+            wrapper.doc.name = null;
+            wrapper.doc.price = null;
+            wrapper.doc.date = null;
             $scope.form.$setPristine();
           }
         })(wrapper));
@@ -49,11 +58,11 @@ angular.module('expensesApp')
 
       var wrapper = this;
 
-      couchDbService.deleteUrl(appSettings.dbExpenses + '/' +item.id)
+      couchDbService.deleteDocByIdAndRev(appSettings.dbExpenses, item.id, item.value.rev)
         .then((function (wrapper) {
           return function () {
-            wrapper.status = 'Expense deleted!';
             wrapper.getExpenses(expensesUrl, wrapper);
+            wrapper.status = 'Expense deleted!';
           }
         })(wrapper));
     }

@@ -7,6 +7,7 @@ angular.module("couchDb", [])
       return $http.get(url)
         .then(
         function (response) {
+
           //multiple rows
           console.log('data loaded');
           if (response.data.rows)return response.data.rows;
@@ -37,29 +38,40 @@ angular.module("couchDb", [])
         });
     }
 
-    var deleteDoc = function (url) {
+    var deleteDocById = function (baseUrl, id) {
 
-      var url = url;
+      var id = id;
+      var url = baseUrl + '/' + id;
 
       return getJsonFromUrl(url)
         .then(function (data) {
           var rev = data._rev;
           console.log('retrieved rev ' + rev + ' for ' + url);
-          var deleteUrl = url + '?rev=' + rev;
-          return $http.delete(deleteUrl)
-            .success(function () {
-              console.log('Deleted: ' + deleteUrl);
-              return true;
-            })
-            .error(function (error) {
-              console.log('Error deleting:' + deleteUrl+' '+error.reason);
-              throw error;
-            });
-
+          return deleteDocByIdAndRev(baseUrl, id, rev);
         },
         function (httpError) {
           // translate the error
-          console.log('error deleting '+url);
+          console.log('error deleting ' + url);
+          throw httpError.status
+          + " for "
+          + httpError.config.method
+          + " " + httpError.config.url
+          + (httpError.data.reason ? " reason: " + httpError.data.reason : "");
+        });
+    }
+
+    var deleteDocByIdAndRev = function (baseUrl, id, rev) {
+
+      var url = baseUrl + '/' + id + '?rev=' + rev;
+
+      return $http.delete(url)
+        .then(function () {
+          console.log('Deleted: ' + url);
+          return true;
+        },
+        function (httpError) {
+          // translate the error
+          console.log('error deleting ' + url);
           throw httpError.status
           + " for "
           + httpError.config.method
@@ -75,8 +87,11 @@ angular.module("couchDb", [])
       postDocToUrl: function (url, item) {
         return postDocToUrl(url, item);
       },
-      deleteUrl: function(url) {
-        return deleteDoc(url);
+      deleteDocById: function (baseUrl, id) {
+        return deleteDocById(baseUrl, id);
+      },
+      deleteDocByIdAndRev: function (baseUrl, id, rev) {
+        return deleteDocByIdAndRev(baseUrl, id, rev);
       }
     };
 
