@@ -1,31 +1,41 @@
 <div ng-controller="MainCtrl as main">
- <expenses-table></expenses-table>
+  <expenses-table></expenses-table>
   </br>
   <form role="form" novalidate ng-submit="main.saveExpense()" name="form">
     <h3>Enter a new expense</h3>
-    <div class="container">
-      <div class="col-xs-5" ng-class="{ 'has-error' : form.name.$invalid && !form.name.$pristine }">
-        <input
-          ng-model="main.doc.name" class="form-control" name="name" placeholder="What did you buy?" required>
-      </div>
-      <div class="col-xs-5" ng-class="{ 'has-error' : form.price.$invalid && !form.price.$pristine }">
-        <input name="price"
-               ng-model="main.doc.price"
-               class="form-control"
-               placeholder="...and how much did it cost?"
-               required
-               ng-pattern="/\d+(\.\d\d)?$/">
-      </div>
-      <div class="col-xs-2">
-        <button
-          class="btn btn-primary pull-right"
-          ng-disabled="form.$invalid"
-          type="submit">Save
-        </button>
-      </div>
+
+    <div class="col-xs-4 pull-left" ng-class="{ 'has-error' : form.name.$invalid && !form.name.$pristine }">
+      <input
+        ng-model="main.doc.name" class="form-control" name="name" placeholder="What did you buy?" required>
+    </div>
+    <div class="col-xs-3" ng-class="{ 'has-error' : form.price.$invalid && !form.price.$pristine }">
+      <input name="price"
+             ng-model="main.doc.price"
+             class="form-control"
+             placeholder="...and how much did it cost?"
+             required
+             ng-pattern="/\d+(\.\d\d)?$/">
+    </div>
+    <div class="col-xs-3" ng-class="{ 'has-error' : form.date.$invalid && !form.date.$pristine }">
+      <p class="input-group">
+        <input type="text" name="date" class="form-control" placeholder="...and when was it?" datepicker-popup="{{ appSettings.dateFormat }}"
+               ng-model="main.doc.date" is-open="main.calPopupOpen" ng-required="true" close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="main.openCalPopup($event)"><i
+                  class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+      </p>
+    </div>
+    <div class="col-xs-2">
+      <button
+        class="btn btn-primary pull-right"
+        ng-disabled="form.$invalid"
+        type="submit">Save
+      </button>
     </div>
 
     <br/>
+    <div class="clearfix"/>
 
     <div class="status" ng-hide="consRefused">
       {{ main.status }}

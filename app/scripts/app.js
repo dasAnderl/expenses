@@ -13,6 +13,7 @@
 angular
   .module('expensesApp', [
     'couchDb',
+    'ui.bootstrap',
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -53,5 +54,9 @@ angular
     $httpProvider.interceptors.push('httpInterceptor');
   })
   .constant('appSettings', {
-    dbExpenses: 'http://127.0.0.1:5984/expenses'
+    dbExpenses: 'http://127.0.0.1:5984/expenses',
+    dateFormat: 'dd.MM.yyyy'
+  })
+  .run(function($rootScope, appSettings) {
+    $rootScope.appSettings = appSettings;
   });
