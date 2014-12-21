@@ -8,17 +8,26 @@
   </tr>
   </thead>
   <tbody>
+
   <tr ng-repeat="expense in main.items">
-    <td>{{ expense.value.name }}</td>
-    <td>{{ expense.value.price }}</td>
-    <td>{{ expense.value.date }}</td>
-    <td>
-      <form role="form" novalidate ng-submit="main.deleteExpense(expense)" name="deleteForm">
-        <button
-          class="pull-right red btn-link glyphicon glyphicon-remove"
-          type="submit"/>
-      </form>
-    </td>
+    <form role="editForm" novalidate ng-submit="main.deleteExpense(expense)" name="saveForm">
+      <td>
+        <span>{{ expense.value.name }}</span>
+      </td>
+      <td>{{ expense.value.price }}</td>
+      <td>{{ expense.value.date| date: appSettings.dateFormat }}</td>
+      <td>
+
+        <button ng-click="main.deleteExpense(expense)"
+                class="pull-right red btn-link glyphicon glyphicon-remove"
+                type="submit"/>
+        <button ng-hide="editForm.$pristine"
+                class="pull-right red btn-link glyphicon glyphicon-floppy-save"
+                type="submit"/>
+      </td>
+    </form>
   </tr>
   </tbody>
 </table>
+
+{{saveForm.$pristine}}

@@ -18,6 +18,13 @@ angular.module('expensesApp')
 
     this.items = [];
     this.status = 'Initial state';
+    this.calPopupOpen = false;
+
+    this.openCalPopup = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.calPopupOpen = true;
+    };
 
     this.getExpenses = function (url, wrapper) {
       couchDbService.getJsonFromUrl(url)
@@ -31,13 +38,6 @@ angular.module('expensesApp')
 
     var expensesUrl = appSettings.dbExpenses+'/_design/expenses/_view/byName';
     this.getExpenses(expensesUrl, this);
-
-    try {
-    var a = new Date();
-      var b = JSON.stringify(a);
-      console.log(b);
-    }
-    catch(e){}
 
     this.saveExpense = function () {
       var wrapper = this;
@@ -67,8 +67,7 @@ angular.module('expensesApp')
         })(wrapper));
     }
   }])
-  .
-  directive('expensesTable', function () {
+  .directive('expensesTable', function () {
     return {
       restrict: 'E',
       templateUrl: '../../views/directives/expenses-table.html'
