@@ -21,8 +21,8 @@
         <input type="text" name="date" class="form-control" placeholder="...and when was it?" datepicker-popup="{{ appSettings.dateFormat }}"
                ng-model="main.doc.date" is-open="main.calPopupOpen" ng-required="true" close-text="Close"/>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="main.openCalPopup($event)"><i
-                  class="glyphicon glyphicon-calendar"></i></button>
+                <button type="button" class="btn btn-default" ng-click="main.openCalPopup($event)">
+                  <i class="glyphicon glyphicon-calendar"></i></button>
               </span>
       </p>
     </div>

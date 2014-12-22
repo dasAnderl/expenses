@@ -19,55 +19,72 @@ angular.module('expensesApp')
     this.items = [];
     this.status = 'Initial state';
     this.calPopupOpen = false;
+    this.expenseEdited = null;
 
-    this.openCalPopup = function($event) {
+    this.openCalPopup = function ($event) {
       $event.preventDefault();
       $event.stopPropagation();
       this.calPopupOpen = true;
     };
 
-    this.getExpenses = function (url, wrapper) {
+    this.getExpenses = function () {
+      var wrapper = this;
+      var url = appSettings.dbExpenses + '/_design/expenses/_view/byName';
       couchDbService.getJsonFromUrl(url)
         .then((function (wrapper) {
           return function (data) {
             wrapper.items = data;
-            wrapper.status = 'Expenses updated!';
+            wrapper.status = 'Expenses fetched!';
           }
         })(wrapper));
     }
 
-    var expensesUrl = appSettings.dbExpenses+'/_design/expenses/_view/byName';
-    this.getExpenses(expensesUrl, this);
+    this.getExpenses();
 
-    this.saveExpense = function () {
+    this.saveExpense = function (expense) {
+
       var wrapper = this;
-      couchDbService.postDocToUrl(appSettings.dbExpenses, wrapper.doc)
-        .then((function (wrapper) {
+      //are we saving new expense or updating existing one
+      var newOrUpdate = expense ? false : true;
+      var doc = newOrUpdate ? wrapper.doc : expense;
+
+      couchDbService.postDocToUrl(appSettings.dbExpenses, doc)
+        .then((function (wrapper, newOrUpdate) {
           return function () {
-            wrapper.getExpenses(expensesUrl, wrapper);
+            wrapper.getExpenses();
             wrapper.status = 'Expense saved!';
-            wrapper.doc.name = null;
-            wrapper.doc.price = null;
-            wrapper.doc.date = null;
-            $scope.form.$setPristine();
+            if (newOrUpdate) {
+              wrapper.doc.name = null;
+              wrapper.doc.price = null;
+              wrapper.doc.date = null;
+              $scope.form.$setPristine();
+            }
           }
-        })(wrapper));
+        })
+        (wrapper, newOrUpdate)
+      )
+      ;
     }
 
-    this.deleteExpense = function (item) {
+    this.deleteExpense = function (expense) {
 
       var wrapper = this;
 
-      couchDbService.deleteDocByIdAndRev(appSettings.dbExpenses, item.id, item.value.rev)
+      var delMethod = expense.value._rev ? couchDbService.deleteDocByIdAndRev(appSettings.dbExpenses, expense.id, expense.value._rev)
+        : couchDbService.deleteDocById(appSettings.dbExpenses, expense.id);
+
+      //couchDbService.deleteDocByIdAndRev(appSettings.dbExpenses, expense.id, expense.value.rev)
+      delMethod
         .then((function (wrapper) {
           return function () {
-            wrapper.getExpenses(expensesUrl, wrapper);
+            wrapper.getExpenses();
             wrapper.status = 'Expense deleted!';
           }
         })(wrapper));
     }
   }])
-  .directive('expensesTable', function () {
+  .
+  directive('expensesTable', function () {
     return {
       restrict: 'E',
       templateUrl: '../../views/directives/expenses-table.html'

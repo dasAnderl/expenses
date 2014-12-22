@@ -1,5 +1,5 @@
- "views": {
+"views": {
        "byName": {
-           "map": "function (doc) {emit(doc._id, { \"id\": doc._id, \"rev\": doc._rev, \"name\": doc.name, \"price\": doc.price, \"date\": doc.date});}"
+           "map": "function (doc) {emit(doc._id, { \"_id\": doc._id, \"_rev\": doc._rev, \"name\": doc.name, \"price\": doc.price, \"date\": doc.date});}"
        }
    }

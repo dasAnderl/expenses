@@ -14,6 +14,7 @@ angular
   .module('expensesApp', [
     'couchDb',
     'ui.bootstrap',
+    'xeditable',
     'ngAnimate',
     'ngCookies',
     'ngResource',
