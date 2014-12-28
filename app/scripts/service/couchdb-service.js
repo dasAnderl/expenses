@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module("couchDb", [])
-  .factory('couchDbService', ['$http', '$q', function ($http) {
+  .service('couchDbService', ['$http', '$q', function ($http) {
 
-    var getJsonFromUrl = function (url) {
+    this.getJsonFromUrl = function (url) {
       return $http.get(url)
         .then(
         function (response) {
@@ -25,7 +25,7 @@ angular.module("couchDb", [])
         });
     }
 
-    var postDocToUrl = function (url, doc) {
+    this.postDocToUrl = function (url, doc) {
       return $http.post(url, doc)
         .success(function () {
           console.log('saved: ' + doc + ' to url ' + url);
@@ -38,7 +38,7 @@ angular.module("couchDb", [])
         });
     }
 
-    var deleteDocById = function (baseUrl, id) {
+    this.deleteDocById = function (baseUrl, id) {
 
       var id = id;
       var url = baseUrl + '/' + id;
@@ -60,7 +60,7 @@ angular.module("couchDb", [])
         });
     }
 
-    var deleteDocByIdAndRev = function (baseUrl, id, rev) {
+    this.deleteDocByIdAndRev = function (baseUrl, id, rev) {
 
       var url = baseUrl + '/' + id + '?rev=' + rev;
 
@@ -79,24 +79,4 @@ angular.module("couchDb", [])
           + (httpError.data.reason ? " reason: " + httpError.data.reason : "");
         });
     }
-
-    return {
-
-      //  if you return {} you return everything, by defining what you return you can hide/encapsulate
-
-      getJsonFromUrl: function (url) {
-        return getJsonFromUrl(url);
-      },
-      postDocToUrl: function (url, item) {
-        return postDocToUrl(url, item);
-      },
-      deleteDocById: function (baseUrl, id) {
-        return deleteDocById(baseUrl, id);
-      },
-      deleteDocByIdAndRev: function (baseUrl, id, rev) {
-        return deleteDocByIdAndRev(baseUrl, id, rev);
-      }
-    };
-
-
   }]);
