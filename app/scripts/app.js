@@ -37,7 +37,7 @@ angular
       }
     }
   ])
-  .config(function ($routeProvider, $httpProvider) {
+  .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -53,11 +53,11 @@ angular
         redirectTo: '/'
       });
     $httpProvider.interceptors.push('httpInterceptor');
-  })
+  }])
   .constant('appSettings', {
     dbExpenses: 'http://127.0.0.1:5984/expenses',
     dateFormat: 'dd.MM.yyyy'
   })
-  .run(function($rootScope, appSettings) {
+  .run(['$rootScope', 'appSettings', function($rootScope, appSettings) {
     $rootScope.appSettings = appSettings;
-  });
+  }]);
