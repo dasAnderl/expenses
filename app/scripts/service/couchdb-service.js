@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module("couchDb", [])
-  .factory('couchDbService', ['$http', '$q', function ($http, $q) {
+  .factory('couchDbService', ['$http', '$q', function ($http) {
 
     var getJsonFromUrl = function (url) {
       return $http.get(url)
@@ -81,6 +81,9 @@ angular.module("couchDb", [])
     }
 
     return {
+
+      //  if you return {} you return everything, by defining what you return you can hide/encapsulate
+
       getJsonFromUrl: function (url) {
         return getJsonFromUrl(url);
       },

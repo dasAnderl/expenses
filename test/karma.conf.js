@@ -33,6 +33,9 @@ module.exports = function(config) {
       //'test/mock/**/*.js',
       //'test/spec/**/*.js'
 
+
+      //the follwoing section will autowire dependencies from bwer.json
+      // during the grunt wiredep task (dev deps currently not supported)
       // bower:js
       'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
@@ -47,7 +50,7 @@ module.exports = function(config) {
       'bower_components/angular-xeditable/dist/js/xeditable.js',
       // endbower
 
-      //dev deps (bower.json) currently not wired
+      //dev deps (bower.json) currently not wired by wiredep
       'bower_components/angular-mocks/angular-mocks.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
