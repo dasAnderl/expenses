@@ -8,7 +8,11 @@
  * Controller of the expensesApp
  */
 angular.module('expensesApp')
-  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', 'couchDbService', function ($http, $q, $scope, appSettings, couchDbService) {
+  .controller('MainCtrl', ['$http', '$q', '$scope', 'appSettings', 'couchDbService', '$localStorage', '$sessionStorage',
+    function ($http, $q, $scope, appSettings, couchDbService, $localStorage, $sessionStorage) {
+
+    this.$localStorage = $localStorage;
+      this.$sessionStorage = $sessionStorage;
 
     this.doc = {
       name: null,

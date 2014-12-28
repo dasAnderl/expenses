@@ -43,5 +43,7 @@
     <div ng-show="consRefused">
       {{ consRefused }}
     </div>
+    <br/>
+    <button class="btn btn-primary" type="button" ng-click="main.$localStorage.counter = main.$localStorage.counter + 1">Increase me! {{main.$localStorage.counter}}, i have state (press F5)</button>
   </form>
 </div>

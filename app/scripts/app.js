@@ -20,7 +20,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'ngStorage'
   ])
   .factory('httpInterceptor', ['$q', '$rootScope', '$injector',
     function ($q, $rootScope, $injector) {
